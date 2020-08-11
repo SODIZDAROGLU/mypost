@@ -7,16 +7,17 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {JWT_SECRET} = require('../config/keys')
 const requireLogin = require('../middleware/requireLogin')
+const nodemailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+const {SENDGRID_API,EMAIL} = require('../config/keys')
+//
 
 
-
-
-
-// const transporter = nodemailer.createTransport(sendgridTransport({
-//     auth:{
-//         api_key:SENDGRID_API
-//     }
-// }))
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth:{
+        api_key:SENDGRID_API
+    }
+}))
 
 router.post('/signup',(req,res)=>{
   const {name,email,password,pic} = req.body 
@@ -28,7 +29,6 @@ router.post('/signup',(req,res)=>{
       if(savedUser){
         return res.status(422).json({error:"user already exists with that email"})
       }
-       // hashing a password, biger the number more secure the password
       bcrypt.hash(password,12)
       .then(hashedpassword=>{
             const user = new User({
@@ -59,7 +59,7 @@ router.post('/signup',(req,res)=>{
   })
 })
 
-//user will be making  a host of quest letters sign in
+
 router.post('/signin',(req,res)=>{
     const {email,password} = req.body
     if(!email || !password){
@@ -70,7 +70,6 @@ router.post('/signin',(req,res)=>{
         if(!savedUser){
            return res.status(422).json({error:"Invalid Email or password"})
         }
-          //comparing password, sending token
         bcrypt.compare(password,savedUser.password)
         .then(doMatch=>{
             if(doMatch){
