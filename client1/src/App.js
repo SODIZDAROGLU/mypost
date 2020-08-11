@@ -15,10 +15,9 @@ import NewPassword from './components/screens/Newpassword'
 export const UserContext = createContext()
 
 
-
-const Routing = ()=>{
-  const history = useHistory()
-  const {state,dispatch} = useContext(UserContext)
+  const Routing = ()=>{
+    const history = useHistory()
+    const {state,dispatch} = useContext(UserContext)
   useEffect(()=>{
     const user = JSON.parse(localStorage.getItem("user"))
     if(user){
